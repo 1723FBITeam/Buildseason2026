@@ -24,7 +24,7 @@ public class Constants {
       public static final int TURRET_LEFT_KRAKEN = 26;
     public static final int TURRET_RIGHT_KRAKEN = 27;
 
-      public static final int TURRET_MOTOR = 10;
+      public static final int TURRET_MOTOR = 23;
 
     // (Optional but recommended)
     public static final boolean TURRET_RIGHT_INVERTED = true;
