@@ -8,41 +8,113 @@
 // update. Deleting the comments indicating the section will prevent
 // it from being updated in the future.
 
-
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
+import swervelib.math.Matter;
+
 /**
- * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
- * constants.  This class should not be used for any other purpose.  All constants should be
- * declared globally (i.e. public static).  Do not put anything functional in this class.
+ * The Constants class provides a convenient place for teams to hold robot-wide
+ * numerical or boolean
+ * constants. This class should not be used for any other purpose. All constants
+ * should be
+ * declared globally (i.e. public static). Do not put anything functional in
+ * this class.
  *
- * <p>It is advised to statically import this class (or one of its inner classes) wherever the
+ * <p>
+ * It is advised to statically import this class (or one of its inner classes)
+ * wherever the
  * constants are needed, to reduce verbosity.
  */
 public class Constants {
+    public static final double ROBOT_MASS = (148.0 - 20.3) * 0.453592; // 32lbs * kg per pound
+    public static final Matter CHASSIS = new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), ROBOT_MASS);
+    public static final double LOOP_TIME = 0.13; // s, 20ms + 110ms sprk max velocity lag
+    public static final double MAX_SPEED = Units.feetToMeters(14.5);
+    // Maximum speed of the robot in meters per second, used to limit acceleration.
 
-      public static final int TURRET_LEFT_KRAKEN = 26;
-    public static final int TURRET_RIGHT_KRAKEN = 27;
-
-      public static final int TURRET_MOTOR = 23;
-
-    // (Optional but recommended)
+    // Turret Constants
+    public static final int TURRET_LEFT_KRAKEN = 126;
+    public static final int TURRET_RIGHT_KRAKEN = 127;
+    public static final int TURRET_MOTOR = 123;
     public static final boolean TURRET_RIGHT_INVERTED = true;
-    
+
+    public static final class DrivebaseConstants {
+        public static double DriveFastScale = 1.0;
+        public static double DrivePrecisionScale = 0.35;
+        // Hold time on motor brakes when disabled
+        public static final double WHEEL_LOCK_TIME = 10.0; // seconds
+
+        // Boilerplate for future game-specific alignment
+        public enum TargetSide {
+            LEFT, RIGHT
+        };
+    }
+
+    public static class OperatorConstants {
+
+        // Joystick Deadband
+        public static final double DEADBAND = 0.1;
+        public static final double LEFT_Y_DEADBAND = 0.1;
+        public static final double RIGHT_X_DEADBAND = 0.3;
+        public static final double TURN_CONSTANT = 6.0;
+
+    }
+
+    // Drivetrain Constants (Legacy - replaced by SwerveConstants)
+    public static final class DriveConstants {
+        // Spark MAX CAN IDs (Drive motors - NEO)
+        public static final int LEFT_FRONT_MAX = 21;
+        public static final int LEFT_REAR_MAX = 22;
+        public static final int RIGHT_REAR_MAX = 23;
+        public static final int RIGHT_FRONT_MAX = 24;
+
+        // Spark Flex CAN IDs (Steering motors - NEO Vortex)
+        public static final int LEFT_FRONT_FLEX = 11;
+        public static final int LEFT_REAR_FLEX = 12;
+        public static final int RIGHT_REAR_FLEX = 13;
+        public static final int RIGHT_FRONT_FLEX = 14;
+
+        // Pigeon 2.0 CAN ID
+        public static final int PIGEON_ID = 35;
+
+        // Motor Configuration
+        public static final int MAX_CURRENT_LIMIT = 40; // Amps for Spark MAX
+        public static final int FLEX_CURRENT_LIMIT = 60; // Amps for Spark Flex
+        public static final boolean RIGHT_SIDE_INVERTED = true;
+    }
+
+    // Swerve Constants - CAN IDs for MK4n with CANcoders
+    public static final class SwerveConstants {
+        // CANcoder IDs (CTRE Absolute Encoders)
+        public static final int FRONT_LEFT_CANCODER = 31;
+        public static final int BACK_LEFT_CANCODER = 32;
+        public static final int BACK_RIGHT_CANCODER = 33;
+        public static final int FRONT_RIGHT_CANCODER = 34;
+
+        // Pigeon 2.0 IMU
+        public static final int PIGEON_ID = 35;
+    }
+
+    // Controller Constants
+    public static final class ControllerConstants {
+        public static final int DRIVER_CONTROLLER = 0;
+        public static final int OPERATOR_CONTROLLER = 1;
+    }
+
 }
-   /**
-    * public static final class DriveConstants {
-    *   public static final int kLeftMotor1Port = 0;
-    *   public static final int kLeftMotor2Port = 1;
-    *   public static final int kRightMotor1Port = 2;
-    *   public static final int kRightMotor2Port = 3; 
-    * }
-    */ 
-    
-    //public static final class ControllerPorts {
-        //public static final int Driver = 0;
-        //public static final int Commander = 1;
+/**
+ * public static final class DriveConstants {
+ * public static final int kLeftMotor1Port = 0;
+ * public static final int kLeftMotor2Port = 1;
+ * public static final int kRightMotor1Port = 2;
+ * public static final int kRightMotor2Port = 3;
+ * }
+ */
 
-    //}
+// public static final class ControllerPorts {
+// public static final int Driver = 0;
+// public static final int Commander = 1;
 
-
+// }
