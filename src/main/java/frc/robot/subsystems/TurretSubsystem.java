@@ -1,7 +1,10 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkMax;
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -12,13 +15,10 @@ import frc.robot.LimelightHelpers;
 
 public class TurretSubsystem extends SubsystemBase {
 
-    private final SparkMax turretMotor =
-        new SparkMax(Constants.TURRET_MOTOR, MotorType.kBrushed);
+private final TalonFX turretMotor = new TalonFX(1);
+    private final PIDController aimPID = new PIDController(0.1, 0.0, 0.001);
 
-    private final PIDController aimPID = new PIDController(0.02, 0.0, 0.001);
-
-    private final NetworkTable limelightTable =
-        NetworkTableInstance.getDefault().getTable("limelight-turrt");
+    private final NetworkTable limelightTable = NetworkTableInstance.getDefault().getTable("limelight-turret");
 
     public void rotate(double speed) {
         turretMotor.set(speed);
@@ -35,39 +35,37 @@ public class TurretSubsystem extends SubsystemBase {
         double tx = limelightTable.getEntry("tx").getDouble(0.0);
 
         // if theres no target it doesnt
+        
         if (tx == 0) {
             turretMotor.set(0);
             return;
+        } else {
+            //double turretSpeed = 0.2;
+             double turretSpeed = aimPID.calculate(tx, 0.0);
+             turretSpeed = MathUtil.clamp(turretSpeed, -0.2, 0.2);
+            turretMotor.set(-turretSpeed);
         }
-
-        double turretSpeed = aimPID.calculate(tx, 0.0);
-
-        // Clamp speed
-        turretSpeed = Math.max(-0.4, Math.min(0.4, turretSpeed));
-
-        turretMotor.set(turretSpeed);
     }
 
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Limelight TX",
-            limelightTable.getEntry("tx").getDouble(0.0));
+                limelightTable.getEntry("tx").getDouble(0.0));
+        SmartDashboard.putNumber("Limelight ID Found:",
+                limelightTable.getEntry("fID").getDouble(0.0));
     }
 }
 
 
 
-        //SparkMaxConfig config = new SparkMaxConfig();
-        
-        //config.idleMode(IdleMode.kBrake);
-        //config.smartCurrentLimit(20);
 
-        //turretMotor.configure(config);
+// SparkMaxConfig config = new SparkMaxConfig();
 
+// config.idleMode(IdleMode.kBrake);
+// config.smartCurrentLimit(20);
 
+// turretMotor.configure(config);
 
-        //turretMotor.restoreFactoryDefaults();
-        //turretMotor.setIdleMode (SparkMax.IdleMode.kBrake);
-        //turretMotor.setSmartCurrentLimit(20);
-    
-
+// turretMotor.restoreFactoryDefaults();
+// turretMotor.setIdleMode (SparkMax.IdleMode.kBrake);
+// turretMotor.setSmartCurrentLimit(20);
