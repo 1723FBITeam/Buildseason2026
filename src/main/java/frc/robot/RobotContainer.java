@@ -64,12 +64,12 @@ public class RobotContainer {
     // new AimTurretCommand(turretSubsystem)
     // );
 
-    // driverController.a()
-    //     .whileTrue(
-    //         new StartEndCommand(
-    //             () -> shooterSubsystem.runShooter(0.4),
-    //             () -> shooterSubsystem.stop(),
-    //             shooterSubsystem));
+    driverController.a()
+      .whileTrue(
+          new StartEndCommand(
+             () -> shooterSubsystem.runShooter(0.4),
+             () -> shooterSubsystem.stopShooter(),
+              shooterSubsystem));
     
     // driverController.b()
     // .whileTrue(
