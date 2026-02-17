@@ -34,11 +34,9 @@ public class Constants {
     public static final double MAX_SPEED = Units.feetToMeters(14.5);
     // Maximum speed of the robot in meters per second, used to limit acceleration.
 
-    // Turret Constants
-    public static final int TURRET_LEFT_KRAKEN = 126;
-    public static final int TURRET_RIGHT_KRAKEN = 127;
-    public static final int TURRET_MOTOR = 123;
-    public static final boolean TURRET_RIGHT_INVERTED = true;
+    public static final class ClimberConstants {
+        public static final int Elevator_MOTOR_ID = 41;
+    }
 
     public static final class DrivebaseConstants {
         public static double DriveFastScale = 1.0;
