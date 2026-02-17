@@ -8,12 +8,14 @@ public class AimTurretCommand extends Command {
 private final TurretSubsystem turret;
 
  public AimTurretCommand(TurretSubsystem turret) {
+        System.out.println("Command STARTED!!!!!");
         this.turret = turret;
         addRequirements(turret);
     }
 
     @Override
     public void execute() {
+        
         turret.aimAtTag();
     }
 
