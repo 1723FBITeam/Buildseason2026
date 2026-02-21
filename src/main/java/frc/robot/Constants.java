@@ -21,31 +21,13 @@ package frc.robot;
  */
 public class Constants {
 
-      public static final int TURRET_LEFT_KRAKEN = 26;
+    public static final int TURRET_LEFT_KRAKEN = 26;
     public static final int TURRET_RIGHT_KRAKEN = 27;
-
-      public static final int TURRET_MOTOR = 23;
-
-    // (Optional but recommended)
-    public static final boolean TURRET_RIGHT_INVERTED = true;
-    
+    public static final int TURRET_MOTOR = 23;
+    public static final int INDEX_MOTOR = 33;
+    public static final int FEEDER_MOTOR = 19;
+    public static final int INTAKE_LEFT_MOTOR = 123;
+    public static final int INTAKE_RIGHT_MOTOR = 123;
+    public static final int INTAKE_ACTIVATOR_MOTOR = 123;
   
 }
-
-
-   /**
-    * public static final class DriveConstants {
-    *   public static final int kLeftMotor1Port = 0;
-    *   public static final int kLeftMotor2Port = 1;
-    *   public static final int kRightMotor1Port = 2;
-    *   public static final int kRightMotor2Port = 3; 
-    * }
-    */ 
-    
-    //public static final class ControllerPorts {
-        //public static final int Driver = 0;
-        //public static final int Commander = 1;
-
-    //}
-
-

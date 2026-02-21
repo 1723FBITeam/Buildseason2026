@@ -50,12 +50,13 @@ public class RobotContainer {
 
   private final TurretSubsystem turretSubsystem = new TurretSubsystem();
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
-  private final ServoSubsystem servoSubsystem = new ServoSubsystem();
+  private final ServoSubsystem servoSubsystem = new ServoSubsystem(); 
+  private final SpindexerSubsystem spindexerSubsystem = new SpindexerSubsystem();
+  private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
 
 
   private final CommandXboxController driverController = new CommandXboxController(0);
-  // private final CommandXboxController operatorController = new
-  // CommandXboxController(1);
+  private final CommandXboxController operatorController = new CommandXboxController(1);
 
   // CONSTRUCTOR yah
   public RobotContainer() {
@@ -64,66 +65,98 @@ public class RobotContainer {
     // new AimTurretCommand(turretSubsystem)
     // );
 
-    driverController.a()
-      .whileTrue(
-          new StartEndCommand(
-             () -> shooterSubsystem.runShooter(0.4),
-             () -> shooterSubsystem.stopShooter(),
-              shooterSubsystem));
-    
-    // driverController.b()
-    // .whileTrue(
-    // new StartEndCommand(
-    // () -> turretSubsystem.aimAtTag(),
-    // () -> turretSubsystem.stop(),
-    // shooterSubsystem));
+
+    // DRIVER CONTROLLER BUTTON BINDINGS
+
+    driverController.leftTrigger()
+     .whileTrue(
+        new StartEndCommand(
+          () -> turretSubsystem.aimAtTag(),
+          () -> turretSubsystem.stop(),
+          shooterSubsystem));
+
+    driverController.y()
+    .whileTrue(
+        new StartEndCommand(
+            () -> {
+                shooterSubsystem.runShooter(0.7);
+                spindexerSubsystem.rotate(0.9);
+            },
+            () -> {
+                shooterSubsystem.stopShooter();
+                spindexerSubsystem.stop(); // or whatever your stop method is
+            },
+            shooterSubsystem,
+            spindexerSubsystem));
 
     driverController.x()
-    .whileTrue(
-        new StartEndCommand(
-            () -> servoSubsystem.levelOne(),   // on start
-            () -> servoSubsystem.levelOne(),   // on end
-            servoSubsystem              // requirement
-        )
-    );
-
-  driverController.y()
-    .whileTrue(
-        new StartEndCommand(
-            () -> servoSubsystem.LevelTwo(),   // on start
-            () -> servoSubsystem.LevelTwo(),   // on end
-            servoSubsystem              // requirement
-        )
-    );
+    .onTrue(
+        new InstantCommand(
+            () -> intakeSubsystem.runIntake(0.5),
+            intakeSubsystem));
 
     driverController.b()
+    .onTrue(
+        new InstantCommand(
+            () -> intakeSubsystem.stopIntake(),
+            intakeSubsystem));
+            
+    //turn this into intake up and down command        
+    driverController.a()
     .whileTrue(
         new StartEndCommand(
-            () -> servoSubsystem.LevelThree(),   // on start
-            () -> servoSubsystem.LevelThree(),   // on end
-            servoSubsystem              // requirement
-        )
-    );
+            () -> spindexerSubsystem.rotate(0.4),
+            () -> spindexerSubsystem.stop(),
+            spindexerSubsystem));
+    
 
-LinearServoTest actuator =
-    new LinearServoTest(0, 0); // PWM 0, Analog 0
 
-actuator.setDefaultCommand(
-    new RunCommand(
-        () -> {
-            double joystick = -driverController.getLeftY();
+  //   driverController.x()
+  //   .whileTrue(
+  //       new StartEndCommand(
+  //           () -> servoSubsystem.levelOne(),   // on start
+  //           () -> servoSubsystem.levelOne(),   // on end
+  //           servoSubsystem              // requirement
+  //       )
+  //   );
 
-            // DEAD BAND
-            if (Math.abs(joystick) < 0.1) {
-                actuator.holdCurrentPosition();
-            } else {
-                // CLAMP happens inside subsystem
-                actuator.manualSpeed(joystick);
-            }
-        },
-        actuator
-    )
-);
+  // driverController.a()
+  //   .whileTrue(
+  //       new StartEndCommand(
+  //           () -> servoSubsystem.LevelTwo(),   // on start
+  //           () -> servoSubsystem.LevelTwo(),   // on end
+  //           servoSubsystem              // requirement
+  //       )
+  //   );
+
+  //   driverController.b()
+  //   .whileTrue(
+  //       new StartEndCommand(
+  //           () -> servoSubsystem.LevelThree(),   // on start
+  //           () -> servoSubsystem.LevelThree(),   // on end
+  //           servoSubsystem              // requirement
+  //       )
+  //   );
+
+// LinearServoTest actuator =
+//     new LinearServoTest(0, 0); // PWM 0, Analog 0
+
+// actuator.setDefaultCommand(
+//     new RunCommand(
+//         () -> {
+//             double joystick = -driverController.getLeftY();
+
+//             // DEAD BAND
+//             if (Math.abs(joystick) < 0.1) {
+//                 actuator.holdCurrentPosition();
+//             } else {
+//                 // CLAMP happens inside subsystem
+//                 actuator.manualSpeed(joystick);
+//             }
+//         },
+//         actuator
+//     )
+// );
 
 
 
@@ -135,7 +168,7 @@ actuator.setDefaultCommand(
           if (Math.abs(input) > 0.1) {
             turretSubsystem.rotate(input * 0.2); // limit speed
           } else {
-            System.out.println("AIMING");
+            // System.out.println("AIMING");
             turretSubsystem.aimAtTag();
           }
 

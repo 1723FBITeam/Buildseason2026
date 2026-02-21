@@ -8,16 +8,17 @@ import com.ctre.phoenix6.signals.InvertedValue;
 
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import edu.wpi.first.math.MathUtil;
 
 public class ShooterSubsystem extends SubsystemBase {
 
   // Flywheels
-  private final TalonFX leftMotor = new TalonFX(26);
-  private final TalonFX rightMotor = new TalonFX(27);
-  private final TalonFX feederMotor = new TalonFX(28);
+  private final TalonFX leftMotor = new TalonFX(Constants.TURRET_LEFT_KRAKEN);
+  private final TalonFX rightMotor = new TalonFX(Constants.TURRET_RIGHT_KRAKEN);
+  private final TalonFX feederMotor = new TalonFX(Constants.FEEDER_MOTOR);
   private final DutyCycleOut shooterOut = new DutyCycleOut(0);
-  private final DutyCycleOut feederOut = new DutyCycleOut(0);
+  // private final DutyCycleOut feederOut = new DutyCycleOut(0);
 
   private final Servo hoodServo = new Servo(0); //PMW port 0
   // Servo limits (tune these!)
@@ -25,16 +26,21 @@ public class ShooterSubsystem extends SubsystemBase {
   private static final double HOOD_MAX = 0.85;
 
   public ShooterSubsystem() {
-    MotorOutputConfigs motorConfigs = new MotorOutputConfigs();
-    motorConfigs.Inverted = InvertedValue.Clockwise_Positive;
-    rightMotor.getConfigurator().apply(motorConfigs);
-  }
 
+    MotorOutputConfigs rightConfigs = new MotorOutputConfigs();
+    rightConfigs.Inverted = InvertedValue.Clockwise_Positive;
+    leftMotor.getConfigurator().apply(rightConfigs);
+    feederMotor.getConfigurator().apply(rightConfigs);
+
+    MotorOutputConfigs leftConfigs = new MotorOutputConfigs();
+    leftConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
+    rightMotor.getConfigurator().apply(leftConfigs);
+}
   // Activating shooter
   /** Spin shooter (-1.0 to 1.0) */
   public void runShooter(double speed) {
     shooterOut.Output = speed;
-    feederMotor.setControl(feederOut);
+    feederMotor.setControl(shooterOut);
     leftMotor.setControl(shooterOut);
     rightMotor.setControl(shooterOut);
   }
