@@ -50,128 +50,147 @@ public class RobotContainer {
 
   private final TurretSubsystem turretSubsystem = new TurretSubsystem();
   private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
-  private final ServoSubsystem servoSubsystem = new ServoSubsystem(); 
-  private final SpindexerSubsystem spindexerSubsystem = new SpindexerSubsystem();
+  private final ClimberSubsystem climberSubsystem = new ClimberSubsystem(); 
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
 
 
-  private final CommandXboxController driverController = new CommandXboxController(0);
-  private final CommandXboxController operatorController = new CommandXboxController(1);
+  private final CommandXboxController controller = new CommandXboxController(0);
 
   // CONSTRUCTOR yah
   public RobotContainer() {
 
-    // turretSubsystem.setDefaultCommand(
-    // new AimTurretCommand(turretSubsystem)
-    // );
+    // ========== SINGLE CONTROLLER - ALL ROBOT CONTROLS ==========
+    // NOTE: All speeds set to LOW values for safe testing
 
-
-    // DRIVER CONTROLLER BUTTON BINDINGS
-
-    driverController.leftTrigger()
+    // TRIGGERS
+    // Left Trigger - Turret auto-aim at AprilTag
+    controller.leftTrigger()
      .whileTrue(
         new StartEndCommand(
           () -> turretSubsystem.aimAtTag(),
           () -> turretSubsystem.stop(),
-          shooterSubsystem));
+          turretSubsystem));
 
-    driverController.y()
+    // Right Trigger - Run shooter flywheels only (spin up)
+    controller.rightTrigger()
     .whileTrue(
         new StartEndCommand(
-            () -> {
-                shooterSubsystem.runShooter(0.7);
-                spindexerSubsystem.rotate(0.9);
-            },
-            () -> {
-                shooterSubsystem.stopShooter();
-                spindexerSubsystem.stop(); // or whatever your stop method is
-            },
-            shooterSubsystem,
-            spindexerSubsystem));
+            () -> shooterSubsystem.runFlywheels(0.3),  // Reduced from 0.7
+            () -> shooterSubsystem.stopFlywheels(),
+            shooterSubsystem));
 
-    driverController.x()
-    .onTrue(
-        new InstantCommand(
-            () -> intakeSubsystem.runIntake(0.5),
-            intakeSubsystem));
+    // FACE BUTTONS
+    // Y - Full shooter (flywheels + feeder + indexer)
+    controller.y()
+    .whileTrue(
+        new StartEndCommand(
+            () -> shooterSubsystem.runFullShooter(0.45),  // Reduced from 0.7
+            () -> shooterSubsystem.stopAll(),
+            shooterSubsystem));
 
-    driverController.b()
-    .onTrue(
-        new InstantCommand(
+    // X - Run intake rollers
+    controller.x()
+    .whileTrue(
+        new StartEndCommand(
+            () -> intakeSubsystem.runIntake(0.35),  // Reduced from 0.5
             () -> intakeSubsystem.stopIntake(),
             intakeSubsystem));
-            
-    //turn this into intake up and down command        
-    driverController.a()
+
+    // B - Intake deploy up
+    controller.b()
     .whileTrue(
         new StartEndCommand(
-            () -> spindexerSubsystem.rotate(0.4),
-            () -> spindexerSubsystem.stop(),
-            spindexerSubsystem));
-    
+            () -> intakeSubsystem.setIntakeUp(),
+            () -> {},
+            intakeSubsystem));
+            
+    // A - Intake deploy down
+    controller.a()
+    .whileTrue(
+        new StartEndCommand(
+            () -> intakeSubsystem.setIntakeDown(),
+            () -> {},
+            intakeSubsystem));
+
+    // BUMPERS
+    // Left Bumper - Run feeder only
+    controller.leftBumper()
+    .whileTrue(
+        new StartEndCommand(
+            () -> shooterSubsystem.runFeeder(0.25),  // Reduced from 0.5
+            () -> shooterSubsystem.stopFeeder(),
+            shooterSubsystem));
+
+    // Right Bumper - Run indexer only
+    controller.rightBumper()
+    .whileTrue(
+        new StartEndCommand(
+            () -> shooterSubsystem.runIndexer(0.25),  // Reduced from 0.4
+            () -> shooterSubsystem.stopIndexer(),
+            shooterSubsystem));
+
+    // D-PAD (POV) - CLIMBER CONTROLS
+    // POV Up (0°) - Elevator UP
+    controller.povUp()
+      .whileTrue(
+          new StartEndCommand(
+              () -> climberSubsystem.elevatorUp(0.3),  // Reduced from 0.6
+              () -> climberSubsystem.stopElevator(),
+              climberSubsystem
+          )
+      );
+
+    // POV Down (180°) - Elevator DOWN
+    controller.povDown()
+      .whileTrue(
+          new StartEndCommand(
+              () -> climberSubsystem.elevatorDown(0.3),  // Reduced from 0.6
+              () -> climberSubsystem.stopElevator(),
+              climberSubsystem
+          )
+      );
+
+    // POV Right (90°) - Climb motors forward
+    controller.povRight()
+      .whileTrue(
+          new StartEndCommand(
+              () -> climberSubsystem.runClimb(0.25),  // Reduced from 0.5
+              () -> climberSubsystem.stopClimb(),
+              climberSubsystem
+          )
+      );
+
+    // POV Left (270°) - Climb motors reverse
+    controller.povLeft()
+      .whileTrue(
+          new StartEndCommand(
+              () -> climberSubsystem.runClimb(-0.25),  // Reduced from -0.5
+              () -> climberSubsystem.stopClimb(),
+              climberSubsystem
+          )
+      );
+
+    // BACK/START BUTTONS - SERVO CONTROLS
+    // Back button - Servos retracted
+    controller.back()
+      .onTrue(new InstantCommand(() -> climberSubsystem.setServoRetracted(), climberSubsystem));
+
+    // Start button - Servos extended
+    controller.start()
+      .onTrue(new InstantCommand(() -> climberSubsystem.setServoExtended(), climberSubsystem));
 
 
-  //   driverController.x()
-  //   .whileTrue(
-  //       new StartEndCommand(
-  //           () -> servoSubsystem.levelOne(),   // on start
-  //           () -> servoSubsystem.levelOne(),   // on end
-  //           servoSubsystem              // requirement
-  //       )
-  //   );
+    // ========== DEFAULT COMMANDS ==========
 
-  // driverController.a()
-  //   .whileTrue(
-  //       new StartEndCommand(
-  //           () -> servoSubsystem.LevelTwo(),   // on start
-  //           () -> servoSubsystem.LevelTwo(),   // on end
-  //           servoSubsystem              // requirement
-  //       )
-  //   );
-
-  //   driverController.b()
-  //   .whileTrue(
-  //       new StartEndCommand(
-  //           () -> servoSubsystem.LevelThree(),   // on start
-  //           () -> servoSubsystem.LevelThree(),   // on end
-  //           servoSubsystem              // requirement
-  //       )
-  //   );
-
-// LinearServoTest actuator =
-//     new LinearServoTest(0, 0); // PWM 0, Analog 0
-
-// actuator.setDefaultCommand(
-//     new RunCommand(
-//         () -> {
-//             double joystick = -driverController.getLeftY();
-
-//             // DEAD BAND
-//             if (Math.abs(joystick) < 0.1) {
-//                 actuator.holdCurrentPosition();
-//             } else {
-//                 // CLAMP happens inside subsystem
-//                 actuator.manualSpeed(joystick);
-//             }
-//         },
-//         actuator
-//     )
-// );
-
-
-
+    // Turret default: Manual control with right stick, auto-aim when centered
     turretSubsystem.setDefaultCommand(new RunCommand(
         () -> {
-          double input = driverController.getRightX();
-          // System.out.println(input);
-          // deadband
+          double input = controller.getRightX();
           if (Math.abs(input) > 0.1) {
-            turretSubsystem.rotate(input * 0.2); // limit speed
+            turretSubsystem.rotate(input * 0.15); // Reduced from 0.2 for testing
           } else {
-            // System.out.println("AIMING");
-            turretSubsystem.aimAtTag();
+            turretSubsystem.aimAtTag(); // Auto-aim when stick centered
           }
-
         },
         turretSubsystem));
 

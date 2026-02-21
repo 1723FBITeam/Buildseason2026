@@ -21,13 +21,102 @@ package frc.robot;
  */
 public class Constants {
 
-    public static final int TURRET_LEFT_KRAKEN = 26;
-    public static final int TURRET_RIGHT_KRAKEN = 27;
-    public static final int TURRET_MOTOR = 23;
-    public static final int INDEX_MOTOR = 33;
-    public static final int FEEDER_MOTOR = 19;
-    public static final int INTAKE_LEFT_MOTOR = 123;
-    public static final int INTAKE_RIGHT_MOTOR = 123;
-    public static final int INTAKE_ACTIVATOR_MOTOR = 123;
+    /**
+     * Operational constants for general robot operation
+     */
+    public static final class OperationalConstants {
+        // Add operational constants here as needed
+        // Examples: loop times, timeouts, general thresholds
+    }
+
+    /**
+     * DriveTrain constants - CAN IDs 1-20 (reserved range)
+     * 4 wheels x 3 motors each (Drive, Steering, Encoder) = 12 IDs
+     */
+    public static final class DriveTrainConstants {
+        // Front Left Module - IDs 1-3
+        public static final int FRONT_LEFT_DRIVE_MOTOR = 1;
+        public static final int FRONT_LEFT_STEERING_MOTOR = 2;
+        public static final int FRONT_LEFT_ENCODER = 3;
+
+        // Front Right Module - IDs 4-6
+        public static final int FRONT_RIGHT_DRIVE_MOTOR = 4;
+        public static final int FRONT_RIGHT_STEERING_MOTOR = 5;
+        public static final int FRONT_RIGHT_ENCODER = 6;
+
+        // Back Left Module - IDs 7-9
+        public static final int BACK_LEFT_DRIVE_MOTOR = 7;
+        public static final int BACK_LEFT_STEERING_MOTOR = 8;
+        public static final int BACK_LEFT_ENCODER = 9;
+
+        // Back Right Module - IDs 10-12
+        public static final int BACK_RIGHT_DRIVE_MOTOR = 10;
+        public static final int BACK_RIGHT_STEERING_MOTOR = 11;
+        public static final int BACK_RIGHT_ENCODER = 12;
+
+        // Reserved: IDs 13-20 for future drivetrain additions
+    }
+
+    /**
+     * Shooting system constants - CAN IDs 21-30 (reserved range)
+     * Includes shooter wheels, turret, spinner, and feeder
+     */
+    public static final class ShootingConstants {
+        // Shooter Motors - IDs 21-22
+        public static final int SHOOTER_LEFT_MOTOR = 21;    // Left shooter wheel
+        public static final int SHOOTER_RIGHT_MOTOR = 22;   // Right shooter wheel 
+
+        // Turret Motor - ID 23
+        public static final int TURRET_MOTOR = 23;          // Turret rotation
+
+        // Feeder Motor - ID 24
+        public static final int FEEDER_MOTOR = 24;          // Feeds notes to shooter 
+
+        // Spinner/Indexer Motor - ID 25
+        public static final int SPINNER_MOTOR = 25;         // Spins/indexes notes
+
+        // Hood Servo - PWM port 0
+        public static final int HOOD_SERVO = 0;             // Hood angle servo (PWM)
+
+        // Hood servo limits
+        public static final double HOOD_MIN = 0.15;
+        public static final double HOOD_MAX = 0.85;
+
+        // Reserved: IDs 26-30 for future shooting system additions
+    }
+
+    /**
+     * Intake system constants - CAN IDs 31-40 (reserved range)
+     * Includes intake rollers and deployment mechanism
+     */
+    public static final class IntakeConstants {
+        // Intake Roller Motors - IDs 31-32
+        public static final int INTAKE_LEFT_MOTOR = 31;     // Left intake roller
+        public static final int INTAKE_RIGHT_MOTOR = 32;    // Right intake roller
+
+        // Intake Deployment Motor - ID 33
+        public static final int INTAKE_DEPLOY_MOTOR = 33;   // Moves intake in/out
+
+        // Reserved: IDs 34-40 for future intake additions
+    }
+
+    /**
+     * Climber system constants - CAN IDs 41-50 (reserved range)
+     * Includes climb motors, elevator, and servos
+     */
+    public static final class ClimberConstants {
+        // Climb/Twist Motors - IDs 41-42
+        public static final int CLIMB_LEFT_MOTOR = 41;      // Left climb/twist motor
+        public static final int CLIMB_RIGHT_MOTOR = 42;     // Right climb/twist motor
+
+        // Elevator Motor - ID 43
+        public static final int ELEVATOR_MOTOR = 43;        // Elevator lift motor
+
+        // Servo IDs (through PWM, not CAN) - PWM ports 1-2
+        public static final int CLIMB_SERVO_LEFT = 1;       // Left climb servo (PWM)
+        public static final int CLIMB_SERVO_RIGHT = 2;      // Right climb servo (PWM)
+
+        // Reserved: IDs 44-50 for future climber additions
+    }
   
 }

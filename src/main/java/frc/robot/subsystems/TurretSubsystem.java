@@ -15,7 +15,7 @@ import frc.robot.LimelightHelpers;
 
 public class TurretSubsystem extends SubsystemBase {
 
-private final TalonFX turretMotor = new TalonFX(1);
+private final TalonFX turretMotor = new TalonFX(Constants.ShootingConstants.TURRET_MOTOR);
     private final PIDController aimPID = new PIDController(0.1, 0.0, 0.001);
 
     private final NetworkTable limelightTable = NetworkTableInstance.getDefault().getTable("limelight-turret");

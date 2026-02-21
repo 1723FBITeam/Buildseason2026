@@ -17,13 +17,13 @@ import frc.robot.Constants;
 public class IntakeSubsystem extends SubsystemBase {
 
 private final TalonFX intakeLeftMotor =
-    new TalonFX(Constants.INTAKE_LEFT_MOTOR);
+    new TalonFX(Constants.IntakeConstants.INTAKE_LEFT_MOTOR);
 
 private final TalonFX intakeRightMotor =
-    new TalonFX(Constants.INTAKE_RIGHT_MOTOR);
+    new TalonFX(Constants.IntakeConstants.INTAKE_RIGHT_MOTOR);
 
 private final TalonFX intakeActivator =
-    new TalonFX(Constants.INTAKE_ACTIVATOR_MOTOR);
+    new TalonFX(Constants.IntakeConstants.INTAKE_DEPLOY_MOTOR);
 
 private SlewRateLimiter rateLimiter = new SlewRateLimiter(3);
 
