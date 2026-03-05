@@ -15,13 +15,20 @@ package frc.robot;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 
+import com.ctre.phoenix6.swerve.SwerveDrivetrain;
+import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.events.EventTrigger;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
-
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -59,6 +66,24 @@ public class RobotContainer {
   // CONSTRUCTOR yah
   public RobotContainer() {
 
+
+    NamedCommands.registerCommand("TurretAim", Commands.run(() -> {
+                        turretSubsystem.aimAtTag();
+                }, turretSubsystem));
+    NamedCommands.registerCommand("Intake", Commands.run(() -> {
+                        intakeSubsystem.setIntakeDown();
+                        intakeSubsystem.runIntake(0.35);
+                }, intakeSubsystem));    
+    NamedCommands.registerCommand("StopIntake", Commands.run(() -> {
+                        intakeSubsystem.stopIntake();
+                        intakeSubsystem.setIntakeUp();
+                }, intakeSubsystem));
+    NamedCommands.registerCommand("Shoot", Commands.run(() -> {
+                        shooterSubsystem.runFullShooter(0.45);
+                }, shooterSubsystem));
+    NamedCommands.registerCommand("StopShoot", Commands.run(() -> {
+                        shooterSubsystem.stopAll();
+                }, shooterSubsystem));
     // ========== SINGLE CONTROLLER - ALL ROBOT CONTROLS ==========
     // NOTE: All speeds set to LOW values for safe testing
 
@@ -71,21 +96,21 @@ public class RobotContainer {
           () -> turretSubsystem.stop(),
           turretSubsystem));
 
-    // Right Trigger - Run shooter flywheels only (spin up)
-    controller.rightTrigger()
-    .whileTrue(
-        new StartEndCommand(
-            () -> shooterSubsystem.runFlywheels(0.3),  // Reduced from 0.7
-            () -> shooterSubsystem.stopFlywheels(),
-            shooterSubsystem));
-
-    // FACE BUTTONS
-    // Y - Full shooter (flywheels + feeder + indexer)
-    controller.y()
+  // Left trigger - Full shooter (flywheels + feeder + indexer)
+    controller.leftTrigger()
     .whileTrue(
         new StartEndCommand(
             () -> shooterSubsystem.runFullShooter(0.45),  // Reduced from 0.7
             () -> shooterSubsystem.stopAll(),
+            shooterSubsystem));
+
+    // FACE BUTTONS
+    // Y - Run shooter flywheels only (spin up)
+    controller.y()
+    .whileTrue(
+        new StartEndCommand(
+            () -> shooterSubsystem.runFlywheels(0.3),  // Reduced from 0.7
+            () -> shooterSubsystem.stopFlywheels(),
             shooterSubsystem));
 
     // X - Run intake rollers
