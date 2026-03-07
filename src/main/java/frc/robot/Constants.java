@@ -11,6 +11,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants.  This class should not be used for any other purpose.  All constants should be
@@ -117,6 +120,18 @@ public class Constants {
         public static final int CLIMB_SERVO_RIGHT = 2;      // Right climb servo (PWM)
 
         // Reserved: IDs 44-50 for future climber additions
+    }
+    public static final class FeildConstants {
+
+        public static final Pose2d HUB_POSE =
+        new Pose2d(5.33, 4.09, new Rotation2d());
+        
+        //TBD
+        //public static final Pose2d LEFT_POSE =
+        //new Pose2d(16.54, 5.55, new Rotation2d());
+
+        //public static final Pose2d RIGHT_POSE =
+        //new Pose2d(16.54, 5.55, new Rotation2d());
     }
   
 }

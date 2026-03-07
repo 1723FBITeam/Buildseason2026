@@ -10,6 +10,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+
 
 /**
  * Unified shooter subsystem - controls flywheels, feeder, and indexer as a coordinated unit.
@@ -32,7 +35,10 @@ public class ShooterSubsystem extends SubsystemBase {
   private final Servo hoodServo = new Servo(Constants.ShootingConstants.HOOD_SERVO);
   private static final double HOOD_MIN = Constants.ShootingConstants.HOOD_MIN;
   private static final double HOOD_MAX = Constants.ShootingConstants.HOOD_MAX;
+  private final InterpolatingDoubleTreeMap hoodTable = new InterpolatingDoubleTreeMap();
+  private final InterpolatingDoubleTreeMap shooterTable = new InterpolatingDoubleTreeMap();
 
+  
   public ShooterSubsystem() {
     // Configure shooter motors - inversions swapped to fix direction
     MotorOutputConfigs rightConfigs = new MotorOutputConfigs();
@@ -56,6 +62,19 @@ public class ShooterSubsystem extends SubsystemBase {
     indexerConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
     indexerConfigs.NeutralMode = com.ctre.phoenix6.signals.NeutralModeValue.Coast;
     indexerMotor.getConfigurator().apply(indexerConfigs);
+
+    // Shot Calibration Points (May need to be tuned)
+    hoodTable.put(1.3, 0.18);
+    hoodTable.put(2.1, 0.30);
+    hoodTable.put(3.0, 0.47);
+    hoodTable.put(3.8, 0.63);
+    hoodTable.put(4.7, 0.80);
+
+    shooterTable.put(1.3, 0.45);
+    shooterTable.put(2.1, 0.55);
+    shooterTable.put(3.0, 0.67);
+    shooterTable.put(3.8, 0.78);
+    shooterTable.put(4.7, 0.90);
   }
 
   // ========== SHOOTER FLYWHEELS ==========
@@ -110,6 +129,9 @@ public class ShooterSubsystem extends SubsystemBase {
     stopIndexer();
   }
 
+  public void HoodDown(){
+    hoodServo.setPosition(0);
+  }
   /** Check if flywheels are at target speed (implement with velocity checking) */
   public boolean isReadyToShoot() {
     // TODO: Implement velocity checking when you tune shooter speeds
@@ -117,13 +139,33 @@ public class ShooterSubsystem extends SubsystemBase {
     return true;
   }
 
+  
+
   // ========== HOOD (for future distance-based shooting) ==========
 
+  // SIMPLER AUTOAIM USING ROBOTPOSE
+  public void autoAim(double distanceMeters) {
+
+    double hoodPos = hoodTable.get(distanceMeters);
+    double shooterSpeed = shooterTable.get(distanceMeters);
+
+    setHoodPosition(hoodPos);
+    runFlywheels(shooterSpeed);
+}
+public void autoShoot(Pose2d robotPose, Pose2d targetPose) {
+
+    double distance =
+        robotPose.getTranslation()
+                 .getDistance(targetPose.getTranslation());
+
+    autoAim(distance);
+}
+
   // /** Set hood position 0-1 */
-  // public void setHoodPosition(double pos) {
-  //   pos = MathUtil.clamp(pos, HOOD_MIN, HOOD_MAX);
-  //   hoodServo.set(pos);
-  // }
+public void setHoodPosition(double pos) {
+  pos = MathUtil.clamp(pos, HOOD_MIN, HOOD_MAX);
+  hoodServo.set(pos);
+}
 
   // /** Auto-aim based on distance in meters */
   // public void autoAim(double distanceMeters) {
